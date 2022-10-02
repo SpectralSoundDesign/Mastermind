@@ -1,5 +1,6 @@
 class Game
   @@gameover = false
+
   def initialize(secret_code)
     @round = 1
     @secret_code = secret_code
@@ -38,6 +39,10 @@ class Game
       check(code, choice)
       puts "=========================================="
     end
+
+    puts "You Win!"
+    puts "Secret code: #{code}"
+    puts "=========================================="
   end
 
   def player_choice
@@ -68,18 +73,15 @@ class Game
       end
     end
 
-    score.each do |v|
-      if v == "correct"
-        @@gameover == true
-      else
-        @@gameover == false
-        break
-      end
+    if all_equal?(score) == true
+      @@gameover = true
     end
 
-    puts "#{@@gameover}"
-    puts "#{code}"
     puts "#{score}"
+  end
+
+  def all_equal?(score)
+    score.uniq == ['correct']
   end
 
 end

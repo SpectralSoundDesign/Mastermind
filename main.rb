@@ -62,26 +62,29 @@ class Game
 
   def check(code, choice)
     score = Array.new
+    hints = Array.new
 
     code.each_with_index do |v, i|
       if choice[i] == v
-        score.push("correct")
+        score.push(true)
+        hints.push("correct")
       elsif code.include?(choice[i]) == true
-        score.push("right color wrong spot")
+        score.push(false)
+        hints.push("right color wrong spot")
       else
-        score.push("incorrect")
+        score.push(false)
       end
     end
 
     if all_equal?(score) == true
       @@gameover = true
     end
-
-    puts "#{score}"
+    
+    puts "#{hints.shuffle()}"
   end
 
   def all_equal?(score)
-    score.uniq == ['correct']
+    score.uniq == [true]
   end
 
 end

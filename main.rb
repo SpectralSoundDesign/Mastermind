@@ -1,9 +1,10 @@
 class Game
   @@gameover = false
 
-  def initialize(secret_code)
+  def initialize(secret_code, colors)
     @round = 1
     @secret_code = secret_code
+    @colors = colors
   end
 
   def intro
@@ -33,7 +34,8 @@ class Game
     puts "=========================================="
 
     while @@gameover != true
-      puts "Round #{@round}:"
+      puts "Color bank: #{@colors}"
+      puts "Round #{@round}"
       choice = player_choice()
       puts "=========================================="
       check(code, choice)
@@ -79,7 +81,7 @@ class Game
     if all_equal?(score) == true
       @@gameover = true
     end
-    
+
     puts "#{hints.shuffle()}"
   end
 
@@ -91,6 +93,11 @@ end
 
 class CodeGen
   @@colors = ["purple", "red", "green", "blue", "gold", "orange"]
+
+  def colors
+    @@colors
+  end
+
   def computer_code
     code = @@colors.sample(4)
     code
@@ -101,7 +108,7 @@ class CodeGen
 end
 
 code = CodeGen.new
-game = Game.new(code.computer_code)
+game = Game.new(code.computer_code, code.colors)
 game.intro
 
 

@@ -15,7 +15,21 @@ class Game
     yes_no = gets.to_s.strip.downcase
     
     if yes_no == 'y'
-      play(@secret_code)
+      puts "Pick a gamemode:"
+      puts "1. Player as codemaker"
+      puts "2. Computer as codemaker"
+      mode = gets.to_i
+
+      case mode
+      when 1
+        computer_play()
+      when 2
+        player_play(@secret_code)
+      else
+        puts "Please enter 1 or 2"
+        intro()
+      end
+
     elsif yes_no == 'n'
       exit
     else
@@ -27,7 +41,29 @@ class Game
     code.map { |i| "X" }
   end
 
-  def play(code)
+  def player_code_gen()
+    code_len = 4
+    player_code = Array.new
+
+    puts "=========================================="
+    puts "Pick 4 colors from the bank: #{@colors}"
+    puts "=========================================="
+
+    code_len.times do |i|
+      puts "Choice #{i + 1}:"
+      choice = gets.strip
+      player_code.push(choice)
+    end
+
+    puts "Your secret code: #{player_code}"
+    player_code
+  end
+
+  def computer_play()
+    player_code_gen()
+  end
+
+  def player_play(code)
     puts "=========================================="
     puts "code:"
     puts "   #{hide_code(code)}"
@@ -101,9 +137,6 @@ class CodeGen
   def computer_code
     code = @@colors.sample(4)
     code
-  end
-
-  def player_code
   end
 end
 

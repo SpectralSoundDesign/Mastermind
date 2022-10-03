@@ -6,7 +6,7 @@ class Game
     @secret_code = secret_code
     @colors = colors
   end
-
+#start intro
   def intro
     puts "------------------------------------------"
     puts "          WELCOME TO MASTERMIND           "
@@ -36,11 +36,11 @@ class Game
       intro()
     end
   end
-
+#hides secret code
   def hide_code(code)
     code.map { |i| "X" }
   end
-
+#player picks colors for secret code
   def player_code_gen()
     code_len = 4
     player_code = Array.new
@@ -55,14 +55,61 @@ class Game
       player_code.push(choice)
     end
 
-    puts "Your secret code: #{player_code}"
     player_code
   end
-
+#starts computer guess gamemode
   def computer_play()
-    player_code_gen()
-  end
+    player_code = player_code_gen()
+    puts "Your secret code: #{player_code}"
 
+    while @@gameover != true
+      puts "Round #{@round}"
+      computer_choice = computer_choice()
+      puts "------------------------------------------"
+      computer_check(player_code, computer_choice)
+      puts "=========================================="
+      puts "\n"
+    end
+
+    puts "Computer Wins!"
+    puts "Secret code: #{player_code}"
+    puts "=========================================="
+
+  end
+#checks computers guesses
+  def computer_check(player_code, computer_choice)
+    score = Array.new
+    hints = Array.new
+
+    player_code.each_with_index do |v, i|
+      if computer_choice[i] == v
+        score.push(true)
+        hints.push("correct")
+      elsif player_code.include?(computer_choice[i]) == true
+        score.push(false)
+        hints.push("right color wrong spot")
+      else
+        score.push(false)
+      end
+    end
+
+    if all_equal?(score) == true
+      @@gameover = true
+    end
+
+    puts "#{hints.shuffle()}"
+  end
+#computer makes guesses
+  def computer_choice()
+    @round += 1
+    arr_len = 4
+    computer_guess = Array.new
+
+    computer_guess = @colors.sample(arr_len)
+    puts "#{computer_guess}"
+    computer_guess
+  end
+#starts player guess gamemode
   def player_play(code)
     puts "=========================================="
     puts "code:"
@@ -73,16 +120,17 @@ class Game
       puts "Color bank: #{@colors}"
       puts "Round #{@round}"
       choice = player_choice()
-      puts "=========================================="
+      puts "------------------------------------------"
       check(code, choice)
       puts "=========================================="
+      puts "\n"
     end
 
     puts "You Win!"
     puts "Secret code: #{code}"
     puts "=========================================="
   end
-
+#allows player to input guesses
   def player_choice
     @round += 1
     arr_len = 4
@@ -97,7 +145,7 @@ class Game
     puts "#{player_guess}"
     player_guess
   end
-
+#checks players guesses
   def check(code, choice)
     score = Array.new
     hints = Array.new
@@ -120,13 +168,13 @@ class Game
 
     puts "#{hints.shuffle()}"
   end
-
+#checks if all colors are correct
   def all_equal?(score)
     score.uniq == [true]
   end
 
 end
-
+#generates computer's secret code
 class CodeGen
   @@colors = ["purple", "red", "green", "blue", "gold", "orange"]
 

@@ -1,10 +1,12 @@
 class Game
   @@gameover = false
+  @@computer_hints = Array.new
 
   def initialize(secret_code, colors)
     @round = 1
     @secret_code = secret_code
     @colors = colors
+    @computer_guess = @colors.sample(4)
   end
 #start intro
   def intro
@@ -67,11 +69,21 @@ class Game
       computer_choice = computer_choice()
       puts "------------------------------------------"
       computer_check(player_code, computer_choice)
+      puts "#{@@computer_hints.shuffle()}"
       puts "=========================================="
       puts "\n"
+      #if @round > 12
+        #@@gameover = true
+      #end
+      @round += 1
     end
 
-    puts "Computer Wins!"
+    if @round > 12
+      puts "You Win!"
+    else
+      puts "Computer Wins!"
+    end
+
     puts "Secret code: #{player_code}"
     puts "=========================================="
 
@@ -79,15 +91,15 @@ class Game
 #checks computers guesses
   def computer_check(player_code, computer_choice)
     score = Array.new
-    hints = Array.new
+    @@computer_hints = Array.new
 
     player_code.each_with_index do |v, i|
       if computer_choice[i] == v
         score.push(true)
-        hints.push("correct")
+        @@computer_hints.push("correct")
       elsif player_code.include?(computer_choice[i]) == true
         score.push(false)
-        hints.push("right color wrong spot")
+        @@computer_hints.push("right color wrong spot")
       else
         score.push(false)
       end
@@ -96,18 +108,28 @@ class Game
     if all_equal?(score) == true
       @@gameover = true
     end
-
-    puts "#{hints.shuffle()}"
   end
 #computer makes guesses
   def computer_choice()
-    @round += 1
     arr_len = 4
-    computer_guess = Array.new
+    count = 0
 
-    computer_guess = @colors.sample(arr_len)
-    puts "#{computer_guess}"
-    computer_guess
+    if @round == 1
+      @computer_guess = @colors.sample(arr_len)
+    elsif @@computer_hints.include?("correct") == true
+      @@computer_hints.each_with_index do |v, i|
+        if v == "correct"
+          count += 1
+        end
+      end
+      @computer_guess = @computer_guess[0..count - 1]
+      @computer_guess += @colors.sample(arr_len - count)
+    else
+      @computer_guess = @colors.sample(arr_len)
+    end
+    
+    puts "#{@computer_guess}"
+    @computer_guess
   end
 #starts player guess gamemode
   def player_play(code)
@@ -124,9 +146,17 @@ class Game
       check(code, choice)
       puts "=========================================="
       puts "\n"
+      if @round > 12
+        @@gameover = true
+      end
     end
 
-    puts "You Win!"
+    if @round > 12
+      puts "Computer Wins!"
+    else
+      puts "You Win!"
+    end
+
     puts "Secret code: #{code}"
     puts "=========================================="
   end

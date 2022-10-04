@@ -53,7 +53,11 @@ class Game
 
     code_len.times do |i|
       puts "Choice #{i + 1}:"
-      choice = gets.strip
+      choice = gets.strip.downcase
+      if @colors.include?(choice) == false
+        puts "Please select a color from the bank."
+        exit
+      end
       player_code.push(choice)
     end
 
@@ -168,7 +172,11 @@ class Game
 
     arr_len.times do |i|
       puts "Choice #{i + 1}:"
-      choice = gets.strip
+      choice = gets.strip.downcase
+      if @colors.include?(choice) == false
+        puts "Please select a color from the bank."
+        exit
+      end
       player_guess.push(choice)
     end
 
